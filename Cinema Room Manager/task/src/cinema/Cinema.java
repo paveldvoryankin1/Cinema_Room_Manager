@@ -4,25 +4,20 @@ import java.util.Scanner;
 public class Cinema {
 
     public static void main(String[] args) {
+
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Enter the number of rows:");
         int rows = scanner.nextInt();
         System.out.println("Enter the number of seats in each row:");
         int seats = scanner.nextInt();
-        String[][] cinema = new String[rows + 1][seats + 1];
-        cinema[0][0] = " ";
-        for (int i = 1; i < rows + 1; i++) {
-            cinema[i][0] = String.valueOf(i);
-        }
-        for (int j = 1; j < seats + 1; j++) {
-            cinema[0][j] = String.valueOf(j);
-        }
-        for (int i = 1; i < rows + 1; i++) {
-            for (int j = 1; j < seats + 1; j++) {
+        String[][] cinema = new String[rows][seats];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < seats; j++) {
                 cinema[i][j] = "S";
             }
         }
+
         System.out.println();
         int menuFlag = 1;
         int purchasedTickets = 0;
@@ -43,39 +38,42 @@ public class Cinema {
                 printCinema(cinema);
             } else if (menuFlag == 2) {
                 System.out.println("Enter a row number: ");
-                int row1 = scanner.nextInt();
+                int rowEnter = scanner.nextInt();
+                int rowIn = rowEnter - 1;
                 System.out.println("Enter a seat number in that row: ");
-                int seat1 = scanner.nextInt();
+                int seatEnter = scanner.nextInt();
+                int seatIn = seatEnter - 1;
                 boolean invalidCoordinates = false;
-                if (row1 > rows || seat1 > seats) {
+                if (rowEnter > rows || seatEnter > seats) {
                     invalidCoordinates = true;
-                } else if (cinema[row1][seat1].equals("B")) {
+                } else if (cinema[rowIn][seatIn].equals("B")) {
                     invalidCoordinates = true;
                 }
                 while (invalidCoordinates) {
-                    if (row1 > rows || seat1 > seats) {
+                    if (rowEnter > rows || seatEnter > seats) {
                         System.out.println("Wrong input!");
-                    } else if (cinema[row1][seat1].equals("B")) {
+                    } else if (cinema[rowIn][seatIn].equals("B")) {
                         System.out.println("That ticket has already been purchased!");
                     }
                     System.out.println();
                     System.out.println("Enter a row number: ");
-                    row1 = scanner.nextInt();
+                    rowEnter = scanner.nextInt();
+                    rowIn = rowEnter - 1;
                     System.out.println("Enter a seat number in that row: ");
-                    seat1 = scanner.nextInt();
-                    if (row1 <= rows && seat1 <= seats) {
-                        if (!cinema[row1][seat1].equals("B")) {
+                    seatEnter = scanner.nextInt();
+                    seatIn = seatEnter - 1;
+                    if (rowEnter <= rows && seatEnter <= seats) {
+                        if (!cinema[rowIn][seatIn].equals("B")) {
                             invalidCoordinates = false;
                         }
                     }
                 }
 
-                cinema[row1][seat1] = "B";
+                cinema[rowIn][seatIn] = "B";
                 purchasedTickets++;
-                //purchasedPercent = ((float) Math.round(((float) purchasedTickets / totalSeats) * 100)) / 100;
                 purchasedPercent = (float) purchasedTickets / totalSeats * 100;
-                currentIncome += ticketPrice(rows, seats, row1);
-                System.out.println("Ticket price: $" + ticketPrice(seats, rows, row1));
+                currentIncome += ticketPrice(rows, seats, rowEnter);
+                System.out.println("Ticket price: $" + ticketPrice(rows, seats, rowEnter));
                 System.out.println();
             } else if (menuFlag == 3) {
                 System.out.println();
@@ -89,10 +87,10 @@ public class Cinema {
         }
     }
 
-    public static int ticketPrice(int rows, int seats, int row1) {
+    public static int ticketPrice(int rows, int seats, int rowEnter) {
         if (seats * rows <= 60) {
             return 10;
-        } else if (row1 <= rows / 2) {
+        } else if (rowEnter <= rows / 2) {
                 return 10;
         } else {
             return 8;
@@ -100,10 +98,23 @@ public class Cinema {
     }
 
     public static void printCinema(String[][] cinema) {
+        String[][] cinemaVisual = new String[cinema.length + 1][cinema[0].length + 1];
+        cinemaVisual[0][0] = " ";
+        for (int i = 1; i < cinemaVisual.length; i++) {
+            cinemaVisual[i][0] = String.valueOf(i);
+        }
+        for (int j = 1; j < cinemaVisual[0].length; j++) {
+            cinemaVisual[0][j] = String.valueOf(j);
+        }
+        for (int i = 1; i < cinemaVisual.length; i++) {
+            for (int j = 1; j < cinemaVisual[0].length; j++) {
+                cinemaVisual[i][j] = cinema[i - 1][j - 1];
+            }
+        }
         System.out.println("Cinema:");
-        for (int i = 0; i < cinema.length; i++) {
-            for (int j = 0; j < cinema[0].length; j++) {
-                System.out.print(cinema[i][j] + " ");
+        for (int i = 0; i < cinemaVisual.length; i++) {
+            for (int j = 0; j < cinemaVisual[0].length; j++) {
+                System.out.print(cinemaVisual[i][j] + " ");
             }
             System.out.println();
         }
